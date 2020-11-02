@@ -10,6 +10,6 @@ $method = strtoupper($_SERVER['REQUEST_METHOD']);
 require __DIR__ . '/../pages/' . ([
     '/' => [
         'GET' => 'index',
-        'POST' => 'index',
+        'POST' => 'post',
     ],
 ][$uri][$method] ?? '404') . '.php';
