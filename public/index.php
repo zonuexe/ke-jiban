@@ -4,6 +4,11 @@ declare(strict_types=1);
 
 require __DIR__ . '/../bootstrap.php';
 
+header('X-Content-Type-Options: nosniff');
+header('X-Frame-Options: SAMEORIGIN');
+header('X-Robots-Tag: noindex, nofollow');
+header('X-XSS-Protection: 1; mode=block');
+
 $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 $method = strtoupper($_SERVER['REQUEST_METHOD']);
 
