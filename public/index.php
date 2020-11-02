@@ -12,4 +12,8 @@ require __DIR__ . '/../pages/' . ([
         'GET' => 'index',
         'POST' => 'post',
     ],
+    '/delete' => [
+        'GET' => 'delete_form',
+        'POST' => 'delete',
+    ],
 ][$uri][$method] ?? '404') . '.php';
