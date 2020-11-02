@@ -46,6 +46,7 @@ function readData(): array
 
 function writeData(string $name, string $content, DateTimeImmutable $datetime, string $ip, ?string $del_pass_hash): void
 {
+    file_exists(__DIR__ . '/../cache/keijiban.json') or touch(__DIR__ . '/../cache/keijiban.json');
     $fp = fopen(__DIR__ . '/../cache/keijiban.json', 'r+');
     flock($fp, LOCK_EX);
 
