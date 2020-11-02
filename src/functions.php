@@ -2,57 +2,30 @@
 
 declare(strict_types=1);
 
-function readData()
+function h(string $value): string
 {
-    $keijban_file = __DIR__ . '/../cache/keijiban.txt';
-
-    $fp = fopen($keijban_file, 'rb');
-
-    if ($fp){
-        if (flock($fp, LOCK_SH)){
-            while (!feof($fp)) {
-                $buffer = fgets($fp);
-                print($buffer);
-            }
-
-            flock($fp, LOCK_UN);
-        }else{
-            print('ファイルロックに失敗しました');
-        }
-    }
-
-    fclose($fp);
+    return htmlspecialchars($value, ENT_QUOTES, 'UTF-8');
 }
 
-function writeData()
+function readData(): array
 {
-    $personal_name = $_POST['personal_name'];
-    $contents = $_POST['contents'];
-    $contents = nl2br($contents);
-    $date = date("Y/m/d H:i:s", time()) . "\n";
-    $IP = $_SERVER["REMOTE_ADDR"] ;
+    return json_decode(file_get_contents(__DIR__ . '/../cache/keijiban.json'), true) ?: [];
+}
 
-    $data = "<hr>";
-    $data = $data."<p>IPアドレス：".$IP."</p>";
-    $data = $data."<p>日時：".$date."</p>";
-    $data = $data."<p>投稿者：".$personal_name."</p>";
-    $data = $data."<p>内容：".$contents."</p>";
+function writeData(string $name, string $content, DateTimeImmutable $datetime, string $ip): void
+{
+    $fp = fopen(__DIR__ . '/../cache/keijiban.json', 'r+');
+    flock($fp, LOCK_EX);
 
-    $keijban_file = __DIR__ . '/../cache/keijiban.txt';
+    $data = json_decode(stream_get_contents($fp), true);
 
-    $fp = fopen($keijban_file, 'ab');
+    $id = ($data[0]['id'] ?? 0) + 1;
+    $date = $datetime->format('Y-m-d H:i:s');
 
-    if ($fp){
-        if (flock($fp, LOCK_EX)){
-            if (fwrite($fp,  $data) === FALSE){
-                print('ファイル書き込みに失敗しました');
-            }
+    array_unshift($data, compact('id', 'name', 'content', 'date', 'ip'));
 
-            flock($fp, LOCK_UN);
-        }else{
-            print('ファイルロックに失敗しました');
-        }
-    }
+    fseek($fp, 0);
+    fwrite($fp, json_encode($data, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE));
 
     fclose($fp);
 }
