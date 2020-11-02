@@ -1,0 +1,9 @@
+parameters:
+	level: max
+	paths:
+		- src/
+		- pages/
+	bootstrapFiles:
+		- bootstrap.php
+	excludes_analyse:
+		- */flycheck*
