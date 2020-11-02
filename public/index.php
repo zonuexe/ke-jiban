@@ -20,7 +20,11 @@ if ($type !== 'Basic' || base64_decode($token) !== 'にゃーん:nya-n') {
 $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 $method = strtoupper($_SERVER['REQUEST_METHOD']);
 
-if ($method === 'POST' && !in_array($_SERVER['HTTP_ORIGIN'], [
+if ($method === 'HEAD') {
+    $method = 'GET';
+}
+
+if ($method !== 'GET' && !in_array($_SERVER['HTTP_ORIGIN'], [
     "http://{$_SERVER['HTTP_HOST']}",
     "https://{$_SERVER['HTTP_HOST']}"
 ], true)) {
